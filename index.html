@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Gửi Người Thương</title>
+    <style>
+        body {
+            margin: 0;
+            background: #000;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            perspective: 1000px; /* Tạo độ sâu 3D cho toàn bộ trang */
+        }
+
+        #ui {
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 20s infinite linear; /* Trái tim xoay chậm trong không gian */
+        }
+
+        @keyframes rotate {
+            0% { transform: rotateY(0deg) rotateX(10deg); }
+            100% { transform: rotateY(360deg) rotateX(10deg); }
+        }
+
+        #ui .love_word {
+            position: absolute;
+            color: #ea80b0;
+            font-size: 1.2rem;
+            /* Giữ nguyên transform của bạn để chữ nghiêng 30 độ */
+            transform: translateY(-100%) rotateZ(-30deg);
+            text-shadow: 0 0 10px #fff, 0 0 20px #ea80b0;
+            letter-spacing: 2px;
+            white-space: nowrap;
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+
+        #ui .love_horizontal {
+            position: absolute;
+            transform-style: preserve-3d;
+            /* Hiệu ứng đung đưa từng dòng dựa trên --i bạn đã gửi */
+            animation: horizontal 10000ms infinite alternate ease-in-out;
+            animation-delay: calc(var(--i) * -300ms);
+        }
+
+        @keyframes horizontal {
+            from { transform: translateX(-30px); }
+            to { transform: translateX(30px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="ui"></div>
+
+    <script>
+        const ui = document.getElementById('ui');
+        const total = 100; // Tăng lên 100 dòng cho trái tim dày dặn hơn
+
+        for (let i = 0; i < total; i++) {
+            const container = document.createElement('div');
+            container.className = 'love_horizontal';
+            container.style.setProperty('--i', i);
+
+            // Công thức toán học tạo hình trái tim 3D
+            const t = (i / total) * Math.PI * 2;
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+            
+            // Tạo chiều sâu Z (giúp các chữ không dính sát vào nhau)
+            const z = Math.sin(t * 2) * 20; 
+
+            const word = document.createElement('div');
+            word.className = 'love_word';
+            word.innerText = 'I LOVE YOU'; // Bạn có thể đổi thành tên bạn gái
+            
+            // Áp dụng tọa độ vào Style
+            word.style.transform = `translate3d(${x * 12}px, ${y * 12}px, ${z}px) rotateZ(${-30}deg)`;
+
+            container.appendChild(word);
+            ui.appendChild(container);
+        }
+    </script>
+</body>
+</html>
